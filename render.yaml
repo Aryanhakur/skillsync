@@ -1,0 +1,30 @@
+services:
+  # Backend service
+  - type: web
+    name: skill-sync-backend
+    runtime: python
+    buildCommand: cd pythonmodel && chmod +x build.sh && ./build.sh
+    startCommand: cd pythonmodel && gunicorn job_api.wsgi:application
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: RAPIDAPI_KEY
+        value: "726bb03d58mshefcca0953ad0d7ap1b6e63jsn054dc3c55e8a"
+      - key: RAPIDAPI_HOST
+        value: "jobs-api14.p.rapidapi.com"
+      - key: PYTHON_VERSION
+        value: 3.9.0
+    
+  # Frontend service
+  - type: web
+    name: skill-sync-frontend
+    runtime: node
+    buildCommand: cd pythonmodel/job-portal-frontend && npm install && npm run build
+    startCommand: cd pythonmodel/job-portal-frontend && npm run serve:ssr:job-portal-frontend
+    envVars:
+      - key: NODE_VERSION
+        value: 18.0.0
+      - key: PORT
+        value: 4000
